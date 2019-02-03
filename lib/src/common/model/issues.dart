@@ -58,6 +58,9 @@ class Issue {
   @JsonKey(name: "closed_by")
   User closedBy;
 
+  @JsonKey(name: "repository_url")
+  String repositoryUrl;
+
   static Issue fromJSON(Map<String, dynamic> input) {
     if (input == null) return null;
 
@@ -72,6 +75,7 @@ class Issue {
       ..number = input['number']
       ..state = input['state']
       ..title = input['title']
+      ..repositoryUrl = input['repository_url']
       ..user = User.fromJson(input['user'] as Map<String, dynamic>)
       ..labels = labels.map(IssueLabel.fromJSON).toList(growable: false)
       ..assignee = User.fromJson(input['assignee'] as Map<String, dynamic>)
