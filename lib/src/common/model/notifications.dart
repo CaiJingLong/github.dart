@@ -34,12 +34,18 @@ class Notification {
 class NotificationSubject {
   String title;
   String type;
+  String url;
+
+  @JsonKey(name: "latest_comment_url")
+  String latestCommentUrl;
 
   static NotificationSubject fromJSON(Map<String, dynamic> input) {
     if (input == null) return null;
 
     return new NotificationSubject()
       ..title = input['title']
-      ..type = input['type'];
+      ..type = input['type']
+      ..latestCommentUrl = input["latest_comment_url"]
+      ..url = input['url'];
   }
 }
