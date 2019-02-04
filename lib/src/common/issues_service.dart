@@ -11,47 +11,54 @@ class IssuesService extends Service {
   /// including owned repositories, member repositories, and organization repositories
   ///
   /// API docs: https://developer.github.com/v3/issues/#list-issues
-  Stream<Issue> listAll(
-      {int milestoneNumber,
-      String state,
-      String direction,
-      String sort,
-      DateTime since,
-      int perPage,
-      List<String> labels}) {
+  Stream<Issue> listAll({
+    int milestoneNumber,
+    String state,
+    String direction,
+    String sort,
+    DateTime since,
+    int perPage,
+    List<String> labels,
+    String filter,
+  }) {
     return _listIssues("/issues", milestoneNumber, state, direction, sort,
-        since, perPage, labels);
+        since, perPage, labels, filter);
   }
 
   /// List all issues across owned and member repositories for the authenticated
   /// user.
   ///
   /// API docs: https://developer.github.com/v3/issues/#list-issues
-  Stream<Issue> listByUser(
-      {int milestoneNumber,
-      String state,
-      String direction,
-      String sort,
-      DateTime since,
-      int perPage,
-      List<String> labels}) {
+  Stream<Issue> listByUser({
+    int milestoneNumber,
+    String state,
+    String direction,
+    String sort,
+    DateTime since,
+    int perPage,
+    List<String> labels,
+    String filter,
+  }) {
     return _listIssues("/user/issues", milestoneNumber, state, direction, sort,
-        since, perPage, labels);
+        since, perPage, labels, filter);
   }
 
   /// List all issues for a given organization for the authenticated user.
   ///
   /// API docs: https://developer.github.com/v3/issues/#list-issues
-  Stream<Issue> listByOrg(String org,
-      {int milestoneNumber,
-      String state,
-      String direction,
-      String sort,
-      DateTime since,
-      int perPage,
-      List<String> labels}) {
+  Stream<Issue> listByOrg(
+    String org, {
+    int milestoneNumber,
+    String state,
+    String direction,
+    String sort,
+    DateTime since,
+    int perPage,
+    List<String> labels,
+    String filter,
+  }) {
     return _listIssues("/orgs/$org/issues", milestoneNumber, state, direction,
-        sort, since, perPage, labels);
+        sort, since, perPage, labels, filter);
   }
 
   /// Lists the issues for the specified repository.
@@ -59,27 +66,32 @@ class IssuesService extends Service {
   /// TODO: Implement more optional parameters.
   ///
   /// API docs:https://developer.github.com/v3/issues/#list-issues-for-a-repository
-  Stream<Issue> listByRepo(RepositorySlug slug,
-      {int milestoneNumber,
-      String state,
-      String direction,
-      String sort,
-      DateTime since,
-      int perPage,
-      List<String> labels}) {
+  Stream<Issue> listByRepo(
+    RepositorySlug slug, {
+    int milestoneNumber,
+    String state,
+    String direction,
+    String sort,
+    DateTime since,
+    int perPage,
+    List<String> labels,
+    String filter,
+  }) {
     return _listIssues("/repos/${slug.fullName}/issues", milestoneNumber, state,
-        direction, sort, since, perPage, labels);
+        direction, sort, since, perPage, labels, filter);
   }
 
   Stream<Issue> _listIssues(
-      String pathSegment,
-      int milestoneNumber,
-      String state,
-      String direction,
-      String sort,
-      DateTime since,
-      int perPage,
-      List<String> labels) {
+    String pathSegment,
+    int milestoneNumber,
+    String state,
+    String direction,
+    String sort,
+    DateTime since,
+    int perPage,
+    List<String> labels,
+    String filter,
+  ) {
     var params = <String, String>{};
 
     if (perPage != null) {
@@ -115,6 +127,11 @@ class IssuesService extends Service {
 
     if (labels != null && labels.isNotEmpty) {
       params['labels'] = labels.join(',');
+    }
+
+    if (filter != null) {
+      //should be `assigned` , `created` , `mentioned` , `subscribed` or `all`
+      params["filter"] = "assigned";
     }
 
     return new PaginationHelper(_github)
