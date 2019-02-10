@@ -64,8 +64,10 @@ class Issue {
   static Issue fromJSON(Map<String, dynamic> input) {
     if (input == null) return null;
 
+    print(input);
+
     List<Map<String, Object>> labels =
-        input['labels'].cast<Map<String, dynamic>>();
+        input['labels']?.cast<Map<String, dynamic>>();
     if (labels == null) labels = <Map<String, dynamic>>[];
 
     return new Issue()

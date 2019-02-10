@@ -129,9 +129,11 @@ class IssuesService extends Service {
       params['labels'] = labels.join(',');
     }
 
-    if (filter != null) {
+    if (filter == null) {
       //should be `assigned` , `created` , `mentioned` , `subscribed` or `all`
       params["filter"] = "assigned";
+    } else {
+      params["filter"] = filter;
     }
 
     return new PaginationHelper(_github)
